@@ -1,0 +1,22 @@
+name: phone_input_plus
+description: "A customizable phone input field with auto country detection, formatting and validation. Perfect for African and international phone numbers."
+version: 0.0.1
+homepage: https://github.com/JoshuaAivodji/phone_input_plus
+repository: https://github.com/JoshuaAivodji/phone_input_plus
+
+environment:
+  sdk: ^3.10.4
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.6.0
+  shared_preferences: ^2.5.4
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
