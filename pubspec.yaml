@@ -3,6 +3,7 @@ description: "A customizable phone input field with auto country detection, form
 version: 0.0.1
 homepage: https://github.com/JoshuaAivodji/phone_input_plus
 repository: https://github.com/JoshuaAivodji/phone_input_plus
+issue_tracker: https://github.com/JoshuaAivodji/phone_input_plus/issues
 
 environment:
   sdk: ^3.10.4
