@@ -3,6 +3,9 @@
 A customizable Flutter phone input field with automatic country detection, smart formatting, and validation. Perfect for African and international phone numbers.
 
 [![pub package](https://img.shields.io/pub/v/phone_input_plus.svg)](https://pub.dev/packages/phone_input_plus)
+[![pub points](https://img.shields.io/pub/points/phone_input_plus?logo=dart)](https://pub.dev/packages/phone_input_plus/score)
+[![popularity](https://img.shields.io/pub/popularity/phone_input_plus?logo=dart)](https://pub.dev/packages/phone_input_plus/score)
+[![likes](https://img.shields.io/pub/likes/phone_input_plus?logo=dart)](https://pub.dev/packages/phone_input_plus/score)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## ✨ Features
