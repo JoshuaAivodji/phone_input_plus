@@ -10,17 +10,17 @@ class CustomizationExamplePage extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       children: [
         const Text(
-          'Exemples de Customisation',
+          'Customization Examples',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         const Text(
-          'Différents styles et configurations possibles.',
+          'Different possible styles and configurations.',
           style: TextStyle(color: Colors.grey),
         ),
         const SizedBox(height: 24),
         const Text(
-          '1. Style minimal',
+          '1. Minimal style',
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 20),
@@ -32,14 +32,14 @@ class CustomizationExamplePage extends StatelessWidget {
             padding: EdgeInsets.all(8),
           ),
           decoration: const InputDecoration(
-            hintText: 'Téléphone',
+            hintText: 'Phone',
             border: OutlineInputBorder(),
             contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
           ),
         ),
         const SizedBox(height: 24),
         const Text(
-          '2. Avec Dialog (au lieu de BottomSheet)',
+          '2. With Dialog (instead of BottomSheet)',
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 20),
@@ -48,18 +48,18 @@ class CustomizationExamplePage extends StatelessWidget {
           autoDetect: false,
           countrySelectorConfig: const CountrySelectorConfig(
             type: CountrySelectorType.dialog,
-            title: 'Choisissez un pays',
-            searchHint: 'Rechercher...',
-            locale: 'fr',
+            title: 'Select a country',
+            searchHint: 'Search...',
+            locale: 'en',
           ),
           decoration: const InputDecoration(
-            labelText: 'Téléphone',
+            labelText: 'Phone',
             border: OutlineInputBorder(),
           ),
         ),
         const SizedBox(height: 24),
         const Text(
-          '3. Sans formatage automatique',
+          '3. Without automatic formatting',
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 20),
@@ -68,14 +68,14 @@ class CustomizationExamplePage extends StatelessWidget {
           autoDetect: false,
           autoFormat: false,
           decoration: const InputDecoration(
-            labelText: 'Téléphone (brut)',
+            labelText: 'Phone (raw)',
             border: OutlineInputBorder(),
-            helperText: 'Les espaces ne sont pas ajoutés automatiquement',
+            helperText: 'Spaces are not added automatically',
           ),
         ),
         const SizedBox(height: 24),
         const Text(
-          '4. En lecture seule',
+          '4. Read-only',
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 8),
@@ -84,7 +84,7 @@ class CustomizationExamplePage extends StatelessWidget {
           autoDetect: false,
           readOnly: true,
           decoration: const InputDecoration(
-            labelText: 'Téléphone (readonly)',
+            labelText: 'Phone (readonly)',
             border: OutlineInputBorder(),
           ),
         ),

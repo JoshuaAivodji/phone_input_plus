@@ -18,12 +18,12 @@ class _ValidationExamplePageState extends State<ValidationExamplePage> {
       padding: const EdgeInsets.all(16),
       children: [
         const Text(
-          'Exemple avec Validation',
+          'Validation Example',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         const Text(
-          'Validation de formulaire avec messages d\'erreur.',
+          'Form validation with error messages.',
           style: TextStyle(color: Colors.grey),
         ),
         const SizedBox(height: 24),
@@ -35,17 +35,17 @@ class _ValidationExamplePageState extends State<ValidationExamplePage> {
                 initialCountry: CountryData.benin,
                 autoDetect: false,
                 decoration: const InputDecoration(
-                  labelText: 'Téléphone *',
-                  hintText: 'Ex: 01 66 64 02 19',
+                  labelText: 'Phone *',
+                  hintText: 'e.g. 01 66 64 02 19',
                   border: OutlineInputBorder(),
-                  helperText: 'Le numéro doit être valide',
+                  helperText: 'The phone number must be valid',
                 ),
                 validator: (phone) {
                   if (phone == null || phone.isEmpty) {
-                    return 'Le numéro de téléphone est requis';
+                    return 'Phone number is required';
                   }
                   if (!phone.isValid) {
-                    return 'Le numéro n\'est pas valide pour ${phone.country.getName('fr')}';
+                    return 'The number is not valid for ${phone.country.getName('en')}';
                   }
                   return null;
                 },
@@ -63,14 +63,14 @@ class _ValidationExamplePageState extends State<ValidationExamplePage> {
                     if (_formKey.currentState!.validate()) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Formulaire valide !'),
+                          content: Text('Form is valid!'),
                           backgroundColor: Colors.green,
                         ),
                       );
                     }
                   },
                   icon: const Icon(Icons.check),
-                  label: const Text('Valider'),
+                  label: const Text('Validate'),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.all(16),
                   ),
@@ -95,13 +95,13 @@ class _ValidationExamplePageState extends State<ValidationExamplePage> {
                       Icon(Icons.check_circle, color: Colors.green),
                       SizedBox(width: 8),
                       Text(
-                        'Formulaire soumis avec succès !',
+                        'Form successfully submitted!',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
                   const SizedBox(height: 12),
-                  Text('Numéro: ${_submittedPhone!.international}'),
+                  Text('Number: ${_submittedPhone!.international}'),
                 ],
               ),
             ),

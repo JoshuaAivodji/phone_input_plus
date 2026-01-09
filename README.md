@@ -26,15 +26,19 @@ A customizable Flutter phone input field with automatic country detection, smart
 <table>
   <tr>
     <td><img src="screenshots/basic_usage.png" width="806" alt=""/></td>
-    <td><img src="screenshots/country_selector.png" width="806" alt=""/></td>
-    <td><img src="screenshots/validation.png" width="806" alt=""/></td>
-    <td><img src="screenshots/controller_example.png" width="806" alt=""/></td>
+    <td><img src="screenshots/basic_usage_1.png" width="806" alt=""/></td>
+    <td><img src="screenshots/bottom_sheet_country.png" width="806" alt=""/></td>
+    <td><img src="screenshots/controller_usage.png" width="806" alt=""/></td>
+    <td><img src="screenshots/dialog_usage.png" width="806" alt=""/></td>
+    <td><img src="screenshots/validation_usage.png" width="806" alt=""/></td>
   </tr>
   <tr>
-    <td text-align="center">Basic Usage</td>
-    <td text-align="center">Country Selector</td>
-    <td text-align="center">Validation</td>
+    <td text-align="center">Basic</td>
+    <td text-align="center">Basic Example</td>
+    <td text-align="center">BottomSheet Country</td>
     <td text-align="center">Controller Example</td>
+    <td text-align="center">Dialog Country</td>
+    <td text-align="center">Validation Example</td>
   </tr>
 </table>
 

@@ -1,6 +1,6 @@
 name: phone_input_plus
 description: "A customizable phone input field with auto country detection, formatting and validation. Perfect for African and international phone numbers."
-version: 0.0.1
+version: 0.1.0
 homepage: https://github.com/JoshuaAivodji/phone_input_plus
 repository: https://github.com/JoshuaAivodji/phone_input_plus
 issue_tracker: https://github.com/JoshuaAivodji/phone_input_plus/issues

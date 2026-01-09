@@ -42,12 +42,12 @@ class _ControllerExamplePageState extends State<ControllerExamplePage> {
       padding: const EdgeInsets.all(16),
       children: [
         const Text(
-          'Exemple avec Controller',
+          'Example with Controller',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         const Text(
-          'Contrôle programmatique du champ avec PhoneController.',
+          'Programmatic control of the field with PhoneController.',
           style: TextStyle(color: Colors.grey),
         ),
         const SizedBox(height: 24),
@@ -55,13 +55,13 @@ class _ControllerExamplePageState extends State<ControllerExamplePage> {
           controller: _controller,
           autoDetect: false,
           decoration: const InputDecoration(
-            labelText: 'Téléphone',
+            labelText: 'Phone',
             border: OutlineInputBorder(),
           ),
         ),
         const SizedBox(height: 24),
         const Text(
-          'Actions programmatiques :',
+          'Programmatic actions :',
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 12),
@@ -102,7 +102,7 @@ class _ControllerExamplePageState extends State<ControllerExamplePage> {
         const SizedBox(height: 24),
         if (_log.isNotEmpty) ...[
           const Text(
-            'Log des changements :',
+            'Change log :',
             style: TextStyle(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 8),

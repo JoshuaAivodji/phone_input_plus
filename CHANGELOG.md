@@ -1,3 +1,18 @@
+## 0.1.0
+
+**Major Update**
+
+### Added
+-  Additional African countries support
+-  More European countries
+-  More American countries
+-  English screenshots for better international reach
+-  Pub.dev badges in README
+
+### Improved
+- 📝 Better internationalization
+- 🌐 Wider country coverage
+
 ## 0.0.1
 
 **Initial Release**

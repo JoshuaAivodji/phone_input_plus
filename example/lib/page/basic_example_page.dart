@@ -17,24 +17,24 @@ class _BasicExamplePageState extends State<BasicExamplePage> {
       padding: const EdgeInsets.all(16),
       children: [
         const Text(
-          'Exemple Basique',
+          'Basic Example',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         const Text(
-          'Utilisation simple sans controller. Le package détecte automatiquement votre pays.',
+          'Simple usage without a controller. The package automatically detects your country.',
           style: TextStyle(color: Colors.grey),
         ),
         const SizedBox(height: 24),
         const Text(
-          '1. Avec auto-détection',
+          '1. With auto-detection',
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 20),
         PhoneInputField(
           decoration: const InputDecoration(
-            labelText: 'Numéro de téléphone',
-            hintText: 'Entrez votre numéro',
+            labelText: 'Phone number',
+            hintText: 'Enter your phone number',
             border: OutlineInputBorder(),
           ),
           onChanged: (phone) {
@@ -45,7 +45,7 @@ class _BasicExamplePageState extends State<BasicExamplePage> {
         ),
         const SizedBox(height: 24),
         const Text(
-          '2. Avec pays initial (Bénin)',
+          '2. With initial country (Benin)',
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 20),
@@ -53,13 +53,13 @@ class _BasicExamplePageState extends State<BasicExamplePage> {
           initialCountry: CountryData.benin,
           autoDetect: false,
           decoration: const InputDecoration(
-            labelText: 'Téléphone (Bénin)',
+            labelText: 'Phone (Benin)',
             border: OutlineInputBorder(),
           ),
         ),
         const SizedBox(height: 24),
         const Text(
-          '3. Liste limitée de pays (Afrique de l\'Ouest)',
+          '3. Limited country list (West Africa)',
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 20),
@@ -74,7 +74,7 @@ class _BasicExamplePageState extends State<BasicExamplePage> {
           autoDetect: false,
           initialCountry: CountryData.benin,
           decoration: const InputDecoration(
-            labelText: 'Téléphone',
+            labelText: 'Phone',
             border: OutlineInputBorder(),
           ),
         ),
@@ -96,21 +96,21 @@ class _BasicExamplePageState extends State<BasicExamplePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Résultat :',
+              'Result:',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 12),
             _buildInfoRow(
-              'Pays',
-              '${phone.country.flagEmoji} ${phone.country.getName('fr')}',
+              'Country',
+              '${phone.country.flagEmoji} ${phone.country.getName('en')}',
             ),
-            _buildInfoRow('Code pays', phone.country.dialCode),
-            _buildInfoRow('Numéro national', phone.nationalNumber),
-            _buildInfoRow('Formaté', phone.formatted),
+            _buildInfoRow('Country code', phone.country.dialCode),
+            _buildInfoRow('National number', phone.nationalNumber),
+            _buildInfoRow('Formatted', phone.formatted),
             _buildInfoRow('International', phone.international),
             _buildInfoRow(
-              'Valide',
-              phone.isValid ? 'Oui' : 'Non',
+              'Valid',
+              phone.isValid ? 'Yes' : 'No',
               isGood: phone.isValid ? true : false,
             ),
           ],
@@ -127,7 +127,7 @@ class _BasicExamplePageState extends State<BasicExamplePage> {
         children: [
           SizedBox(
             width: 120,
-            child: Text('$label :', style: const TextStyle(color: Colors.grey)),
+            child: Text('$label:', style: const TextStyle(color: Colors.grey)),
           ),
           Expanded(
             child: Text(
