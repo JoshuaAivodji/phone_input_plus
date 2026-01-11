@@ -12,3 +12,5 @@ export 'src/services/ip_based_detector.dart';
 export 'src/services/locale_detector.dart';
 export 'src/services/cached_detector.dart';
 export 'src/services/composite_detector.dart';
+export 'src/core/formatter/phone_number_text_input_formatter.dart';
+export 'src/core/formatter/phone_length_input_formatter.dart';

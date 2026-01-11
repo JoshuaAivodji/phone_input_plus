@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:phone_input_plus/src/core/formatter/phone_number_text_input_formatter.dart';
+import '../core/formatter/phone_length_input_formatter.dart';
 import '../models/country.dart';
 import '../controllers/phone_controller.dart';
 import '../core/phone_number.dart';
@@ -61,10 +62,19 @@ class PhoneInputField extends StatefulWidget {
 
   final TextInputAction? textInputAction;
 
-  final TextInputType keyboardType;
-
   /// Locale for country names
   final String locale;
+
+  /// Enable intelligent paste detection
+  /// When user pastes an international number (e.g. +2290166640219),
+  /// automatically detect country and extract national number
+  final bool enablePasteDetection;
+
+  /// Keyboard type to display
+  /// If null, automatically chooses based on [enablePasteDetection]:
+  /// - true → TextInputType.text (allows +)
+  /// - false → TextInputType.phone (numeric keyboard)
+  final TextInputType? keyboardType;
 
   const PhoneInputField({
     super.key,
@@ -86,9 +96,15 @@ class PhoneInputField extends StatefulWidget {
     this.readOnly = false,
     this.focusNode,
     this.textInputAction,
-    this.keyboardType = TextInputType.phone,
     this.locale = 'en',
+    this.enablePasteDetection = true,
+    this.keyboardType,
   });
+
+  TextInputType get effectiveKeyboardType {
+    if (keyboardType != null) return keyboardType!;
+    return enablePasteDetection ? TextInputType.text : TextInputType.phone;
+  }
 
   @override
   State<PhoneInputField> createState() => _PhoneInputFieldState();
@@ -101,6 +117,8 @@ class _PhoneInputFieldState extends State<PhoneInputField> {
   late List<Country> _availableCountries;
   bool _isInternalUpdate = false;
   bool _isDetecting = false;
+  String _lastText = '';
+  late PhoneLengthInputFormatter _lengthFormatter;
 
   bool get _isControllerProvided => widget.controller != null;
 
@@ -111,6 +129,11 @@ class _PhoneInputFieldState extends State<PhoneInputField> {
     _initializeController();
     _initializeFocusNode();
     _initializeTextController();
+    _lengthFormatter = PhoneLengthInputFormatter(_controller.country);
+
+    if (widget.enablePasteDetection) {
+      _textController.addListener(_detectPaste);
+    }
 
     if (widget.autoDetect) {
       _detectCountry();
@@ -170,8 +193,72 @@ class _PhoneInputFieldState extends State<PhoneInputField> {
     }
   }
 
+  void _handlePastedInternationalNumber(String pastedText) {
+    try {
+      final cleanText = pastedText.replaceAll(RegExp(r'[^\d+]'), '');
+
+      if (!cleanText.startsWith('+')) return;
+
+      final phoneNumber = PhoneNumber.fromInternational(
+        cleanText,
+        _availableCountries,
+      );
+
+      _isInternalUpdate = true;
+      _controller.setValue(phoneNumber);
+
+      final formattedText = widget.autoFormat
+          ? phoneNumber.formatted
+          : phoneNumber.nationalNumber;
+
+      _textController.value = TextEditingValue(
+        text: formattedText,
+        selection: TextSelection.collapsed(offset: formattedText.length),
+      );
+
+      _isInternalUpdate = false;
+
+      if (widget.onCountryChanged != null) {
+        widget.onCountryChanged!(phoneNumber.country);
+      }
+
+      if (widget.onChanged != null) {
+        widget.onChanged!(phoneNumber);
+      }
+
+      debugPrint('Paste detected: ${phoneNumber.international}');
+    } catch (e) {
+      debugPrint('Unable to parse pasted number: $e');
+      // all back to manual input if parsing fails
+      _isInternalUpdate = true;
+      final cleanNumber = pastedText.replaceAll(RegExp(r'[^\d]'), '');
+      _textController.text = cleanNumber;
+      _isInternalUpdate = false;
+      _controller.updateNumber(cleanNumber);
+    }
+  }
+
+  void _detectPaste() {
+    final currentText = _textController.text;
+
+    if (currentText.startsWith('+') &&
+        currentText.length > _lastText.length + 5) {
+      debugPrint('Paste event detected via listener');
+      _handlePastedInternationalNumber(currentText);
+    }
+
+    _lastText = currentText;
+  }
+
   void _onTextChanged(String text) {
     if (_isInternalUpdate) {
+      return;
+    }
+
+    if (widget.enablePasteDetection &&
+        text.startsWith('+') &&
+        !_lastText.startsWith('+')) {
+      _handlePastedInternationalNumber(text);
       return;
     }
 
@@ -188,6 +275,8 @@ class _PhoneInputFieldState extends State<PhoneInputField> {
     if (_isInternalUpdate) {
       return;
     }
+
+    _lengthFormatter.updateCountry(_controller.country);
 
     final newText = widget.autoFormat
         ? _controller.formatted
@@ -278,6 +367,10 @@ class _PhoneInputFieldState extends State<PhoneInputField> {
       _controller.dispose();
     }
 
+    if (widget.enablePasteDetection) {
+      _textController.removeListener(_detectPaste);
+    }
+
     super.dispose();
   }
 
@@ -288,9 +381,12 @@ class _PhoneInputFieldState extends State<PhoneInputField> {
       focusNode: _focusNode,
       enabled: widget.enabled,
       readOnly: widget.readOnly,
-      keyboardType: widget.keyboardType,
       textInputAction: widget.textInputAction ?? TextInputAction.done,
-      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+      keyboardType: widget.effectiveKeyboardType,
+      inputFormatters: [
+        PhoneNumberTextInputFormatter(allowPlus: widget.enablePasteDetection),
+        _lengthFormatter,
+      ],
       autovalidateMode: widget.autovalidateMode,
       validator: _validate,
       onChanged: _onTextChanged,

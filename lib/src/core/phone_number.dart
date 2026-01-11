@@ -28,7 +28,10 @@ class PhoneNumber {
     }
 
     // Find the matching country based on dial code
-    for (final country in availableCountries) {
+    final sortedCountries = List<Country>.from(availableCountries)
+      ..sort((a, b) => b.dialCode.length.compareTo(a.dialCode.length));
+
+    for (final country in sortedCountries) {
       if (clean.startsWith(country.dialCode)) {
         final nationalNumber = clean.substring(country.dialCode.length);
         return PhoneNumber(country: country, nationalNumber: nationalNumber);

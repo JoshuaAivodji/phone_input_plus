@@ -11,10 +11,13 @@ A customizable Flutter phone input field with automatic country detection, smart
 ## ✨ Features
 
 -  **Auto Country Detection** - Detects user's country via IP or device locale
+-  **Intelligent Paste Detection** - Auto-detects country from pasted international numbers
 -  **Smart Formatting** - Real-time number formatting as you type
+-  **Dynamic Length Limitation** - Automatically limits input based on country
+-  **Adaptive Keyboard** - Automatically chooses the best keyboard type
 -  **Built-in Validation** - Country-specific phone number validation
 -  **Highly Customizable** - Extensive styling and configuration options
--  **54 African Countries** - Optimized for African phone numbers
+-  **52 African Countries** - Comprehensive support for African phone numbers
 -  **International Support** - Works worldwide with any country
 -  **Multiple Selector Types** - BottomSheet, Dialog, or Full Page
 -  **Search Functionality** - Quick country search with multi-language support
@@ -202,6 +205,67 @@ Form(
 )
 ```
 
+## ⌨️ Keyboard Type & Paste Detection
+
+### Intelligent Paste Detection
+
+By default, `PhoneInputField` supports intelligent paste detection. When a user pastes an international number like `+2290166640219`, the widget automatically:
+
+1. Detects the country (Benin in this case)
+2. Changes the country selector
+3. Extracts the national number
+4. Formats it correctly
+```dart
+PhoneInputField(
+  enablePasteDetection: true,  // Default
+  decoration: const InputDecoration(
+    labelText: 'Phone Number',
+    hintText: 'Paste +2290166640219',
+    border: OutlineInputBorder(),
+  ),
+)
+```
+
+### Keyboard Behavior
+
+The keyboard type is automatically chosen based on paste detection:
+
+| Paste Detection   | Keyboard Type    | Behavior                        |
+|-------------------|------------------|---------------------------------|
+| Enabled (default) | Text keyboard    | Allows pasting numbers with `+` |
+| Disabled          | Numeric keyboard | Better UX for manual entry      |
+
+**Disable paste detection for numeric keyboard:**
+```dart
+PhoneInputField(
+  enablePasteDetection: false,  // Numeric keyboard
+  decoration: const InputDecoration(
+    labelText: 'Phone Number',
+    border: OutlineInputBorder(),
+  ),
+)
+```
+
+### Manual Override
+
+You can manually specify the keyboard type:
+```dart
+PhoneInputField(
+  keyboardType: TextInputType.phone,  // Force numeric keyboard
+  enablePasteDetection: false,  // Disable paste (won't work with numeric)
+)
+```
+
+Or try to keep both features with:
+```dart
+PhoneInputField(
+  keyboardType: const TextInputType.numberWithOptions(signed: true),
+  enablePasteDetection: true,  // May work on some devices
+)
+```
+
+**Note:** The ability to paste numbers with `+` on numeric keyboards varies by device and OS.
+
 ## 🌍 Country Detection
 
 The package automatically detects the user's country using multiple strategies:
@@ -327,21 +391,28 @@ PhoneInputField(
 
 ### Quick Access
 ```dart
-// Individual countries
+// Individual countries (52 African countries)
 CountryData.benin
-CountryData.gabon
-CountryData.senegal
-CountryData.coteDivoire
-CountryData.cameroon
+CountryData.nigeria
+CountryData.southAfrica
+CountryData.kenya
+CountryData.ghana
+// ... and 47 more African countries
+
+// Non-African
 CountryData.france
 CountryData.usa
-// ... and more
-
-// Lists
-CountryData.allCountries // All available countries
-CountryData.africanCountries // All African countries
-CountryData.africanPlusMajor // African + France + USA
+CountryData.canada
 ```
+
+### Regions
+
+- **Africa**: 52 countries (complete coverage)
+- **Europe**: France, Belgium, Switzerland, Germany, Italy, Spain, Portugal, Netherlands, UnitedKingdom, Ireland,
+- **Americas**: USA, Canada, Mexico, Brazil, Argentina, Chile, Colombia, Peru, Venezuela, DominicanRepublic
+
+*More countries will be added in future releases based on user feedback.*
+
 
 ### Search Countries
 ```dart
@@ -362,19 +433,21 @@ final benin = CountryData.getByDialCode('+229');
 
 ### PhoneInputField
 
-| Parameter          | Type               | Default       | Description                                      |
-|--------------------|--------------------|---------------|--------------------------------------------------|
-| `controller`       | `PhoneController?` | `null`        | Optional controller for programmatic control     |
-| `initialCountry`   | `Country?`         | `null`        | Initial country (ignored if controller provided) |
-| `countries`        | `List<Country>`    | All countries | List of available countries                      |
-| `autoDetect`       | `bool`             | `true`        | Auto-detect user's country                       |
-| `autoFormat`       | `bool`             | `true`        | Format number as user types                      |
-| `validator`        | `Function?`        | `null`        | Custom validation function                       |
-| `onChanged`        | `Function?`        | `null`        | Callback when number changes                     |
-| `onCountryChanged` | `Function?`        | `null`        | Callback when country changes                    |
-| `decoration`       | `InputDecoration?` | `null`        | TextField decoration                             |
-| `enabled`          | `bool`             | `true`        | Enable/disable the field                         |
-| `readOnly`         | `bool`             | `false`       | Make field read-only                             |
+| Parameter              | Type               | Default       | Description                                      |
+|------------------------|--------------------|---------------|--------------------------------------------------|
+| `controller`           | `PhoneController?` | `null`        | Optional controller for programmatic control     |
+| `initialCountry`       | `Country?`         | `null`        | Initial country (ignored if controller provided) |
+| `countries`            | `List<Country>`    | All countries | List of available countries                      |
+| `autoDetect`           | `bool`             | `true`        | Auto-detect user's country                       |
+| `autoFormat`           | `bool`             | `true`        | Format number as user types                      |
+| `enablePasteDetection` | `bool`             | `true`        | Enable intelligent paste detection               |
+| `keyboardType`         | `TextInputType?`   | `null`        | Keyboard type (auto-detected if null)            |
+| `validator`            | `Function?`        | `null`        | Custom validation function                       |
+| `onChanged`            | `Function?`        | `null`        | Callback when number changes                     |
+| `onCountryChanged`     | `Function?`        | `null`        | Callback when country changes                    |
+| `decoration`           | `InputDecoration?` | `null`        | TextField decoration                             |
+| `enabled`              | `bool`             | `true`        | Enable/disable the field                         |
+| `readOnly`             | `bool`             | `false`       | Make field read-only                             |                           |
 
 ### PhoneController
 
@@ -402,6 +475,15 @@ final benin = CountryData.getByDialCode('+229');
 | `international`  | `String`  | International format |
 | `formatted`      | `String`  | Formatted display    |
 | `isValid`        | `bool`    | Validation status    |
+
+### PhoneInputField
+
+| Parameter              | Type             | Default | Description                                                  |
+|------------------------|------------------|---------|--------------------------------------------------------------|
+| ...                    | ...              | ...     | ...                                                          |
+| `enablePasteDetection` | `bool`           | `true`  | Enable intelligent paste detection for international numbers |
+| `keyboardType`         | `TextInputType?` | `null`  | Keyboard type (auto-detected if null)                        |
+| ...                    | ...              | ...     | ...                                                          |
 
 ## 🤝 Contributing
 

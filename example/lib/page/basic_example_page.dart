@@ -68,7 +68,7 @@ class _BasicExamplePageState extends State<BasicExamplePage> {
             CountryData.benin,
             CountryData.gabon,
             CountryData.senegal,
-            CountryData.civ,
+            CountryData.ivoryCoast,
             CountryData.cameroon,
           ],
           autoDetect: false,
