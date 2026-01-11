@@ -476,14 +476,6 @@ final benin = CountryData.getByDialCode('+229');
 | `formatted`      | `String`  | Formatted display    |
 | `isValid`        | `bool`    | Validation status    |
 
-### PhoneInputField
-
-| Parameter              | Type             | Default | Description                                                  |
-|------------------------|------------------|---------|--------------------------------------------------------------|
-| ...                    | ...              | ...     | ...                                                          |
-| `enablePasteDetection` | `bool`           | `true`  | Enable intelligent paste detection for international numbers |
-| `keyboardType`         | `TextInputType?` | `null`  | Keyboard type (auto-detected if null)                        |
-| ...                    | ...              | ...     | ...                                                          |
 
 ## 🤝 Contributing
 
