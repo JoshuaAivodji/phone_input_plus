@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:phone_input_plus/src/core/formatter/phone_number_text_input_formatter.dart';
+import 'package:phone_input_plus/src/models/copy_button_position.dart';
+import 'package:phone_input_plus/src/widgets/phone_input_decoration_builder.dart';
 import '../core/formatter/phone_length_input_formatter.dart';
 import '../models/country.dart';
 import '../controllers/phone_controller.dart';
 import '../core/phone_number.dart';
 import '../core/country_data.dart';
+import '../models/phone_input_style.dart';
+import '../models/phone_input_theme.dart';
 import '../services/composite_detector.dart';
 import 'country_button.dart';
 import 'country_selector.dart';
@@ -66,15 +70,28 @@ class PhoneInputField extends StatefulWidget {
   final String locale;
 
   /// Enable intelligent paste detection
-  /// When user pastes an international number (e.g. +2290166640219),
-  /// automatically detect country and extract national number
   final bool enablePasteDetection;
 
   /// Keyboard type to display
-  /// If null, automatically chooses based on [enablePasteDetection]:
-  /// - true → TextInputType.text (allows +)
-  /// - false → TextInputType.phone (numeric keyboard)
   final TextInputType? keyboardType;
+
+  /// Predefined style for the input field
+  final PhoneInputStyle? style;
+
+  /// Custom theme configuration
+  final PhoneInputTheme? theme;
+
+  /// Show copy button to copy formatted phone number
+  final bool showCopyButton;
+
+  /// Position of the copy button
+  final CopyButtonPosition copyButtonPosition;
+
+  /// Custom copy button icon
+  final IconData? copyButtonIcon;
+
+  /// Message to show when number is copied
+  final String? copiedMessage;
 
   const PhoneInputField({
     super.key,
@@ -99,6 +116,12 @@ class PhoneInputField extends StatefulWidget {
     this.locale = 'en',
     this.enablePasteDetection = true,
     this.keyboardType,
+    this.style,
+    this.theme,
+    this.showCopyButton = false,
+    this.copyButtonPosition = CopyButtonPosition.suffix,
+    this.copyButtonIcon,
+    this.copiedMessage,
   });
 
   TextInputType get effectiveKeyboardType {
@@ -106,19 +129,30 @@ class PhoneInputField extends StatefulWidget {
     return enablePasteDetection ? TextInputType.text : TextInputType.phone;
   }
 
+  PhoneInputTheme get effectiveTheme {
+    if (theme != null) return theme!;
+    if (style != null) return PhoneInputTheme.fromStyle(style!);
+    return PhoneInputTheme.standard();
+  }
+
   @override
   State<PhoneInputField> createState() => _PhoneInputFieldState();
 }
 
-class _PhoneInputFieldState extends State<PhoneInputField> {
+class _PhoneInputFieldState extends State<PhoneInputField>
+    with SingleTickerProviderStateMixin {
   late PhoneController _controller;
   late TextEditingController _textController;
   late FocusNode _focusNode;
   late List<Country> _availableCountries;
+  late PhoneLengthInputFormatter _lengthFormatter;
+  late AnimationController _shakeController;
+  late Animation<double> _shakeAnimation;
+
   bool _isInternalUpdate = false;
   bool _isDetecting = false;
+  bool _hasInteracted = false;
   String _lastText = '';
-  late PhoneLengthInputFormatter _lengthFormatter;
 
   bool get _isControllerProvided => widget.controller != null;
 
@@ -129,7 +163,8 @@ class _PhoneInputFieldState extends State<PhoneInputField> {
     _initializeController();
     _initializeFocusNode();
     _initializeTextController();
-    _lengthFormatter = PhoneLengthInputFormatter(_controller.country);
+    _initializeFormatter();
+    _initializeAnimations();
 
     if (widget.enablePasteDetection) {
       _textController.addListener(_detectPaste);
@@ -153,7 +188,6 @@ class _PhoneInputFieldState extends State<PhoneInputField> {
       final defaultCountry = widget.initialCountry ?? _availableCountries.first;
       _controller = PhoneController(initialCountry: defaultCountry);
     }
-
     _controller.addListener(_onControllerChanged);
   }
 
@@ -167,6 +201,28 @@ class _PhoneInputFieldState extends State<PhoneInputField> {
           ? _controller.formatted
           : _controller.nationalNumber,
     );
+  }
+
+  void _initializeFormatter() {
+    _lengthFormatter = PhoneLengthInputFormatter(_controller.country);
+  }
+
+  void _initializeAnimations() {
+    _shakeController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+
+    _shakeAnimation =
+        Tween<double>(
+            begin: 0,
+            end: 10,
+          ).chain(CurveTween(curve: Curves.elasticIn)).animate(_shakeController)
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.completed) {
+              _shakeController.reverse();
+            }
+          });
   }
 
   Future<void> _detectCountry() async {
@@ -191,6 +247,18 @@ class _PhoneInputFieldState extends State<PhoneInputField> {
         setState(() => _isDetecting = false);
       }
     }
+  }
+
+  void _detectPaste() {
+    final currentText = _textController.text;
+
+    if (currentText.startsWith('+') &&
+        currentText.length > _lastText.length + 5) {
+      debugPrint('Paste event detected via listener');
+      _handlePastedInternationalNumber(currentText);
+    }
+
+    _lastText = currentText;
   }
 
   void _handlePastedInternationalNumber(String pastedText) {
@@ -229,7 +297,6 @@ class _PhoneInputFieldState extends State<PhoneInputField> {
       debugPrint('Paste detected: ${phoneNumber.international}');
     } catch (e) {
       debugPrint('Unable to parse pasted number: $e');
-      // all back to manual input if parsing fails
       _isInternalUpdate = true;
       final cleanNumber = pastedText.replaceAll(RegExp(r'[^\d]'), '');
       _textController.text = cleanNumber;
@@ -238,21 +305,11 @@ class _PhoneInputFieldState extends State<PhoneInputField> {
     }
   }
 
-  void _detectPaste() {
-    final currentText = _textController.text;
-
-    if (currentText.startsWith('+') &&
-        currentText.length > _lastText.length + 5) {
-      debugPrint('Paste event detected via listener');
-      _handlePastedInternationalNumber(currentText);
-    }
-
-    _lastText = currentText;
-  }
-
   void _onTextChanged(String text) {
-    if (_isInternalUpdate) {
-      return;
+    if (_isInternalUpdate) return;
+
+    if (!_hasInteracted && text.isNotEmpty) {
+      setState(() => _hasInteracted = true);
     }
 
     if (widget.enablePasteDetection &&
@@ -272,9 +329,7 @@ class _PhoneInputFieldState extends State<PhoneInputField> {
   }
 
   void _onControllerChanged() {
-    if (_isInternalUpdate) {
-      return;
-    }
+    if (_isInternalUpdate) return;
 
     _lengthFormatter.updateCountry(_controller.country);
 
@@ -321,7 +376,6 @@ class _PhoneInputFieldState extends State<PhoneInputField> {
       if (widget.onCountryChanged != null) {
         widget.onCountryChanged!(selectedCountry);
       }
-
       _focusNode.requestFocus();
     }
   }
@@ -333,10 +387,16 @@ class _PhoneInputFieldState extends State<PhoneInputField> {
   }
 
   String? _validate(String? value) {
-    if (widget.validator != null) {
-      return widget.validator!(_controller.value);
+    final theme = widget.effectiveTheme;
+    final result = widget.validator != null
+        ? widget.validator!(_controller.value)
+        : null;
+
+    if (result != null && theme.enableShakeAnimation && _hasInteracted) {
+      _shakeController.forward(from: 0);
     }
-    return null;
+
+    return result;
   }
 
   @override
@@ -357,7 +417,12 @@ class _PhoneInputFieldState extends State<PhoneInputField> {
 
   @override
   void dispose() {
+    if (widget.enablePasteDetection) {
+      _textController.removeListener(_detectPaste);
+    }
+
     _textController.dispose();
+    _shakeController.dispose();
 
     if (widget.focusNode == null) {
       _focusNode.dispose();
@@ -367,67 +432,53 @@ class _PhoneInputFieldState extends State<PhoneInputField> {
       _controller.dispose();
     }
 
-    if (widget.enablePasteDetection) {
-      _textController.removeListener(_detectPaste);
-    }
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: _textController,
-      focusNode: _focusNode,
-      enabled: widget.enabled,
-      readOnly: widget.readOnly,
-      textInputAction: widget.textInputAction ?? TextInputAction.done,
-      keyboardType: widget.effectiveKeyboardType,
-      inputFormatters: [
-        PhoneNumberTextInputFormatter(allowPlus: widget.enablePasteDetection),
-        _lengthFormatter,
-      ],
-      autovalidateMode: widget.autovalidateMode,
-      validator: _validate,
-      onChanged: _onTextChanged,
-      onFieldSubmitted: _onSubmitted,
-      decoration: (widget.decoration ?? const InputDecoration()).copyWith(
-        prefixIcon: Padding(
-          padding: const EdgeInsets.only(left: 8, right: 4),
-          child: ValueListenableBuilder<PhoneNumber>(
-            valueListenable: _controller,
-            builder: (context, phoneNumber, child) {
-              return Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (_isDetecting)
-                    const Padding(
-                      padding: EdgeInsets.all(12),
-                      child: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
-                    )
-                  else
-                    CountryButton(
-                      country: phoneNumber.country,
-                      onPressed: _onCountryButtonPressed,
-                      style:
-                          widget.countryButtonStyle ??
-                          const CountryButtonStyle(),
-                      enabled: widget.enabled && !widget.readOnly,
-                    ),
-                  Container(
-                    height: 24,
-                    width: 1,
-                    margin: const EdgeInsets.symmetric(horizontal: 8),
-                    color: Theme.of(context).dividerColor,
-                  ),
-                ],
-              );
-            },
-          ),
+    final theme = widget.effectiveTheme;
+
+    return AnimatedBuilder(
+      animation: _shakeAnimation,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: theme.enableShakeAnimation
+              ? Offset(_shakeAnimation.value, 0)
+              : Offset.zero,
+          child: child,
+        );
+      },
+      child: TextFormField(
+        controller: _textController,
+        focusNode: _focusNode,
+        enabled: widget.enabled,
+        readOnly: widget.readOnly,
+        textInputAction: widget.textInputAction ?? TextInputAction.done,
+        keyboardType: widget.effectiveKeyboardType,
+        inputFormatters: [
+          PhoneNumberTextInputFormatter(allowPlus: widget.enablePasteDetection),
+          _lengthFormatter,
+        ],
+        autovalidateMode: widget.autovalidateMode,
+        validator: _validate,
+        onChanged: _onTextChanged,
+        onFieldSubmitted: _onSubmitted,
+        decoration: PhoneInputDecorationBuilder.build(
+          userDecoration: widget.decoration,
+          theme: theme,
+          controller: _controller,
+          isDetecting: _isDetecting,
+          onCountryButtonPressed: _onCountryButtonPressed,
+          focusNode: _focusNode,
+          hasInteracted: _hasInteracted,
+          enabled: widget.enabled,
+          readOnly: widget.readOnly,
+          context: context,
+          countryButtonStyle: widget.countryButtonStyle,
+          showCopyButton: widget.showCopyButton,
+          copyButtonIcon: widget.copyButtonIcon,
+          copiedMessage: widget.copiedMessage,
         ),
       ),
     );

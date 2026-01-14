@@ -27,6 +27,7 @@ class CustomizationExamplePage extends StatelessWidget {
         PhoneInputField(
           initialCountry: CountryData.benin,
           autoDetect: false,
+          showCopyButton: true,
           countryButtonStyle: const CountryButtonStyle(
             showDialCode: false,
             padding: EdgeInsets.all(8),

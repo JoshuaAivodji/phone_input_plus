@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phone_input_plus_example/page/styles_example_page.dart';
 
 import 'page/basic_example_page.dart';
 import 'page/controller_example_page.dart';
@@ -39,6 +40,7 @@ class _DemoHomePageState extends State<DemoHomePage> {
     BasicExamplePage(),
     ControllerExamplePage(),
     ValidationExamplePage(),
+    StylesExamplePage(),
     CustomizationExamplePage(),
   ];
 
@@ -65,7 +67,8 @@ class _DemoHomePageState extends State<DemoHomePage> {
             icon: Icon(Icons.check_circle),
             label: 'Validation',
           ),
-          NavigationDestination(icon: Icon(Icons.palette), label: 'Custom'),
+          NavigationDestination(icon: Icon(Icons.palette), label: 'Styles'),
+          NavigationDestination(icon: Icon(Icons.tune), label: 'Custom'),
         ],
       ),
     );

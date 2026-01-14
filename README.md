@@ -15,6 +15,9 @@ A customizable Flutter phone input field with automatic country detection, smart
 -  **Smart Formatting** - Real-time number formatting as you type
 -  **Dynamic Length Limitation** - Automatically limits input based on country
 -  **Adaptive Keyboard** - Automatically chooses the best keyboard type
+-  **5 Predefined Styles** - Beautiful ready-to-use visual styles
+-  **Copy Button** - One-tap copy of formatted phone numbers
+-  **Visual Feedback** - Animated validation and smooth transitions
 -  **Built-in Validation** - Country-specific phone number validation
 -  **Highly Customizable** - Extensive styling and configuration options
 -  **52 African Countries** - Comprehensive support for African phone numbers
@@ -113,6 +116,112 @@ PhoneInputField(
     labelText: 'Phone Number',
     border: OutlineInputBorder(),
   ),
+)
+```
+## 🎨 Visual Styles
+
+### Predefined Styles
+
+Choose from 5 beautiful predefined styles:
+```dart
+// Modern style with animations and feedback
+PhoneInputField(
+  style: PhoneInputStyle.modern,
+  decoration: const InputDecoration(
+    labelText: 'Phone Number',
+    border: OutlineInputBorder(),
+  ),
+)
+
+// Minimal style - ultra clean
+PhoneInputField(
+  style: PhoneInputStyle.minimal,
+  decoration: const InputDecoration(
+    labelText: 'Phone',
+  ),
+)
+
+// Rounded style - iOS-like
+PhoneInputField(
+  style: PhoneInputStyle.rounded,
+  decoration: const InputDecoration(
+    labelText: 'Phone',
+    border: InputBorder.none,
+  ),
+)
+
+// Standard and Outlined also available
+```
+
+### Available Styles
+
+| Style      | Description            | Features                                           |
+|------------|------------------------|----------------------------------------------------|
+| `standard` | Clean default style    | Simple and professional                            |
+| `modern`   | Animated with feedback | ✓ Validation icon, shake animation, dynamic colors |
+| `minimal`  | Ultra clean            | Underline only, compact                            |
+| `rounded`  | iOS-like               | Rounded corners, background fill                   |
+| `outlined` | Material emphasized    | Bold borders                                       |
+
+### Custom Theme
+
+Create your own custom style:
+```dart
+PhoneInputField(
+  theme: PhoneInputTheme(
+    borderRadius: BorderRadius.circular(16),
+    showValidationIcon: true,
+    enableShakeAnimation: true,
+    validBorderColor: Colors.purple,
+    invalidBorderColor: Colors.orange,
+    focusedBorderColor: Colors.deepPurple,
+    borderWidth: 2.5,
+  ),
+)
+```
+
+### Mix Styles
+
+Start with a preset and customize:
+```dart
+PhoneInputField(
+  theme: PhoneInputTheme.modern().copyWith(
+    validBorderColor: Colors.blue,
+    borderRadius: BorderRadius.circular(20),
+  ),
+)
+```
+
+## 📋 Copy Button
+
+Enable a copy button to let users copy the formatted phone number with one tap:
+```dart
+PhoneInputField(
+  showCopyButton: true,  // Enable copy button
+  decoration: const InputDecoration(
+    labelText: 'Phone Number',
+    border: OutlineInputBorder(),
+  ),
+)
+```
+
+### Customize Copy Button
+```dart
+PhoneInputField(
+  showCopyButton: true,
+  copyButtonIcon: Icons.content_copy,  // Custom icon
+  copiedMessage: 'Number copied!',  // Custom message
+)
+```
+
+### Combine with Validation
+
+The copy button works seamlessly with validation icons:
+```dart
+PhoneInputField(
+  style: PhoneInputStyle.modern,  // Has validation icon
+  showCopyButton: true,  // Add copy button
+  // Both icons appear side-by-side
 )
 ```
 
@@ -448,6 +557,11 @@ final benin = CountryData.getByDialCode('+229');
 | `decoration`           | `InputDecoration?` | `null`        | TextField decoration                             |
 | `enabled`              | `bool`             | `true`        | Enable/disable the field                         |
 | `readOnly`             | `bool`             | `false`       | Make field read-only                             |                           |
+| `style`                | `PhoneInputStyle?` | `null`        | Predefined visual style                          | 
+| `theme`                | `PhoneInputTheme?` | `null`        | Custom theme configuration                       | 
+| `showCopyButton`       | `bool`             | `false`       | Show copy button                                 |
+| `copyButtonIcon`       | `IconData?`        | `Icons.copy`  | Custom copy icon                                 | 
+| `copiedMessage`        | `String?`          | `null`        | Custom copied message                            | 
 
 ### PhoneController
 

@@ -1,3 +1,33 @@
+## 0.3.0
+
+**UI/UX Update**
+
+### Added
+
+-  **Predefined Visual Styles** - 5 ready-to-use styles for instant beautiful inputs
+   - `PhoneInputStyle.standard` - Clean default style
+   - `PhoneInputStyle.modern` - With animations and visual feedback
+   - `PhoneInputStyle.minimal` - Ultra clean with underline only
+   - `PhoneInputStyle.rounded` - iOS-like with rounded corners
+   - `PhoneInputStyle.outlined` - Material emphasized borders
+
+-  **Copy Button** - One-tap copy of formatted phone numbers
+   - Built-in copy button with animation
+   - Customizable icon and position
+   - Success feedback with snackbar
+   - Enable with `showCopyButton: true`
+
+-  **Custom Theming System** - Create your own custom styles
+   - `PhoneInputTheme` class for complete control
+   - Customizable colors, borders, padding, animations
+   - Mix and match with predefined styles
+
+-  **Enhanced Visual Feedback**
+   - Animated validation icon (✓/✗)
+   - Dynamic border colors (green/red/blue)
+   - Shake animation on validation error
+   - Smooth transitions and animations
+
 ## 0.2.0
 
 **Major Update** 🚀
