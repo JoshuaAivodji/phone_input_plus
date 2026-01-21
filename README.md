@@ -48,7 +48,7 @@ A customizable Flutter phone input field with automatic country detection, smart
   </tr>
 </table>
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Installation
 
@@ -68,7 +68,7 @@ flutter pub get
 import 'package:phone_input_plus/phone_input_plus.dart';
 ```
 
-## 💡 Basic Usage
+## Basic Usage
 
 ### Simple Phone Input
 
@@ -118,7 +118,7 @@ PhoneInputField(
   ),
 )
 ```
-## 🎨 Visual Styles
+## Visual Styles
 
 ### Predefined Styles
 
@@ -192,7 +192,55 @@ PhoneInputField(
 )
 ```
 
-## 📋 Copy Button
+## Decoration Priority System
+
+The package follows Flutter's standard priority system:
+
+1. **`decoration`** - Full control, takes absolute priority
+2. **`theme`** - Applied only if `decoration` is null
+3. **`style`** - Shorthand for predefined themes
+
+### Examples
+
+#### Using decoration only (recommended for custom styles)
+```dart
+PhoneInputField(
+  decoration: InputDecoration(
+    fillColor: Colors.grey[200],
+    filled: true,
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide.none,
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(color: Colors.blue, width: 2),
+    ),
+    hintText: 'Phone number',
+  ),
+)
+```
+
+#### Using theme for quick styling
+```dart
+PhoneInputField(
+  theme: PhoneInputTheme.rounded().copyWith(
+    fillColor: Colors.grey[200],
+  ),
+)
+```
+
+#### Using predefined styles
+```dart
+PhoneInputField(
+  style: PhoneInputStyle.modern,
+)
+```
+
+**Note:** When you provide `decoration`, the `theme` parameter is ignored. This gives you full control over the field's appearance.
+
+
+## Copy Button
 
 Enable a copy button to let users copy the formatted phone number with one tap:
 ```dart
@@ -225,7 +273,7 @@ PhoneInputField(
 )
 ```
 
-## 🎯 Advanced Usage
+## Advanced Usage
 
 ### Using PhoneController
 
@@ -314,7 +362,7 @@ Form(
 )
 ```
 
-## ⌨️ Keyboard Type & Paste Detection
+## Keyboard Type & Paste Detection
 
 ### Intelligent Paste Detection
 
@@ -375,7 +423,7 @@ PhoneInputField(
 
 **Note:** The ability to paste numbers with `+` on numeric keyboards varies by device and OS.
 
-## 🌍 Country Detection
+## Country Detection
 
 The package automatically detects the user's country using multiple strategies:
 
@@ -398,7 +446,7 @@ PhoneInputField(
 )
 ```
 
-## ✅ Validation
+## Validation
 
 ### Built-in Validation
 
@@ -440,7 +488,7 @@ PhoneInputField(
 )
 ```
 
-## 🎨 Customization
+## Customization
 
 ### Country Button Style
 
@@ -496,7 +544,7 @@ PhoneInputField(
 )
 ```
 
-## 📚 Available Countries
+## Available Countries
 
 ### Quick Access
 ```dart

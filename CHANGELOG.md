@@ -1,3 +1,11 @@
+## 0.3.1
+
+### Fixed
+- **BREAKING FIX**: `decoration` parameter now has priority over `theme`
+   - When providing a custom `InputDecoration`, it is now fully respected
+   - `theme` is only applied when `decoration` is null
+   - This fixes the issue where users had to duplicate styling in both `theme` and `decoration`
+
 ## 0.3.0
 
 **UI/UX Update**
